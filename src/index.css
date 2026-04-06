@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Calendar leave status colors */
+.leave-approved {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.leave-pending {
+  background-color: #f59e0b !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+.leave-rejected {
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-radius: 8px;
+}
+
+/* Sunday styling - red text only */
+.sunday-text {
+  color: #ef4444 !important;
+  font-weight: 600;
+}
