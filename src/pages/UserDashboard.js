@@ -306,7 +306,7 @@ const UserDashboard = () => {
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{user?.name || 'Employee'}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[120px] sm:max-w-none">{user?.email || 'employee@company.com'}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[120px] sm:max-w-none">{user?.email || 'No email available'}</p>
                   </div>
                   <ChevronDown className="w-4 h-4 text-slate-500 dark:text-slate-400" />
                 </div>

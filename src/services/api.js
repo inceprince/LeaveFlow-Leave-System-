@@ -1,6 +1,19 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  'https://leaveflowbackend-production.up.railway.app/api';
+
+const extractApiErrorMessage = (error) => {
+  const data = error?.response?.data;
+
+  if (typeof data === 'string') return data;
+  if (data?.message) return data.message;
+  if (data?.error) return data.error;
+  if (data?.details) return data.details;
+
+  return error?.message || 'Request failed';
+};
 
 const api = axios.create({
   baseURL: API_URL,
@@ -29,7 +42,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
+    console.error('API Error:', extractApiErrorMessage(error), error.response?.data);
     return Promise.reject(error);
   }
 );
@@ -107,3 +120,4 @@ export const managerService = {
 };
 
 export default api;
+export { extractApiErrorMessage };
