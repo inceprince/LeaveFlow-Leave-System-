@@ -8,8 +8,12 @@ The app supports employee leave applications, leave history tracking, profile up
 
 - Employees can apply for leave, view leave history, update profile details, and change passwords.
 - Admins can review pending requests, approve or reject with comments, filter leave records, and manage user-related leave visibility.
+- The system includes email notifications for the leave workflow.
+- When a user submits a leave request, an email is sent to the admin.
+- When an admin approves or rejects a leave request, an email is sent back to the user with the decision message or comment.
 - The frontend connects to a live backend API hosted on Railway.
 - Data is stored in PostgreSQL using NeonDB as the cloud database provider.
+- The application is highly responsive on mobile devices and includes a clean, modern UI for both desktop and smaller screens.
 
 ## Screenshots
 
@@ -86,6 +90,7 @@ VITE_API_URL="https://leaveflowbackend-production.up.railway.app/api"
 - View leave history with status and manager comments
 - Update profile information
 - Change password
+- Receive email updates after leave approval or rejection
 
 ### Admin Features
 
@@ -95,6 +100,13 @@ VITE_API_URL="https://leaveflowbackend-production.up.railway.app/api"
 - Search and review users
 - View employee leave history
 - Change password
+- Receive leave request notification emails when employees submit requests
+
+### Additional Highlights
+
+- Email-based leave workflow notifications between users and admins
+- Mobile responsive design with optimized layouts for phones, tablets, and desktop screens
+- Clean and modern UI focused on usability and readability
 
 ## Routes
 
