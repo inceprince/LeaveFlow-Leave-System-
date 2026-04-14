@@ -11,6 +11,40 @@ The app supports employee leave applications, leave history tracking, profile up
 - The frontend connects to a live backend API hosted on Railway.
 - Data is stored in PostgreSQL using NeonDB as the cloud database provider.
 
+## Screenshots
+
+### Employee Module
+
+#### Leave Application
+
+![User Leave Application](./Screenshot/UserLeaveApplication.png)
+
+#### Leave History
+
+![User Leave History](./Screenshot/UserLeaveHistory.png)
+
+#### User Profile
+
+![User Profile](./Screenshot/UserProfile.png)
+
+#### Change Password
+
+![User Change Password](./Screenshot/userChangePassword.png)
+
+### Admin Module
+
+#### Pending Leave Requests
+
+![Admin Leave Requests](./Screenshot/AdminLeaveRequest.png)
+
+#### All Leaves With Filters
+
+![All Leaves With Filter](./Screenshot/AllLeaveWithfilter.png)
+
+#### Change Password
+
+![Admin Change Password](./Screenshot/AdminChangePassword.png)
+
 ## Tech Stack
 
 ### Frontend
@@ -110,40 +144,6 @@ https://leaveflowbackend-production.up.railway.app/api
 - `GET /manager/users/{userId}/leaves`
 - `GET /manager/users/{userId}/leaves/filter`
 - `GET /manager/users/{userId}/leaves/status`
-
-## Screenshots
-
-### Employee Module
-
-#### Leave Application
-
-![User Leave Application](./Screenshot/UserLeaveApplication.png)
-
-#### Leave History
-
-![User Leave History](./Screenshot/UserLeaveHistory.png)
-
-#### User Profile
-
-![User Profile](./Screenshot/UserProfile.png)
-
-#### Change Password
-
-![User Change Password](./Screenshot/userChangePassword.png)
-
-### Admin Module
-
-#### Pending Leave Requests
-
-![Admin Leave Requests](./Screenshot/AdminLeaveRequest.png)
-
-#### All Leaves With Filters
-
-![All Leaves With Filter](./Screenshot/AllLeaveWithfilter.png)
-
-#### Change Password
-
-![Admin Change Password](./Screenshot/AdminChangePassword.png)
 
 ## Getting Started
 
