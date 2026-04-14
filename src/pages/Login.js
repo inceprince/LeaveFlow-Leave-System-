@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { authService } from '../services/api';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { authService, extractApiErrorMessage } from '../services/api';
 import { useTheme } from '../contexts/ThemeContext';
 import logo from '../assets/OIP.webp';
 import { 
@@ -18,7 +18,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme } = useTheme();
+  const isAdminLogin = location.pathname === '/admin/login';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,7 +41,7 @@ const Login = () => {
         navigate('/dashboard');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      setError(extractApiErrorMessage(err) || 'Invalid credentials');
     } finally {
       setLoading(false);
     }
@@ -56,7 +58,9 @@ const Login = () => {
             </div>
             <div>
               <h1 className="text-lg font-bold text-slate-800" style={{ fontFamily: 'Poppins, sans-serif' }}>LeaveFlow</h1>
-              <p className="text-xs text-slate-500" style={{ fontFamily: 'Poppins, sans-serif' }}>Smart employee leave management</p>
+              <p className="text-xs text-slate-500" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                {isAdminLogin ? 'Manager access portal' : 'Smart employee leave management'}
+              </p>
             </div>
           </div>
         </div>
@@ -71,10 +75,12 @@ const Login = () => {
             {/* Header */}
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                Login 
+                {isAdminLogin ? 'Admin Login' : 'Login'}
               </h2>
               <p className="text-sm text-slate-600" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                Sign in to explore the LeaveFlow experience
+                {isAdminLogin
+                  ? 'Sign in with your manager account to review and manage leave requests'
+                  : 'Sign in to explore the LeaveFlow experience'}
               </p>
             </div>
 
@@ -104,7 +110,7 @@ const Login = () => {
                     className={`w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${
                       theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'
                     }`}
-                    placeholder="Enter your email"
+                    placeholder={isAdminLogin ? 'Enter admin email' : 'Enter your email'}
                     style={{ fontFamily: 'Poppins, sans-serif' }}
                   />
                 </div>
@@ -138,7 +144,7 @@ const Login = () => {
                     className={`w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${
                       theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'
                     }`}
-                    placeholder="Enter your password"
+                    placeholder={isAdminLogin ? 'Enter admin password' : 'Enter your password'}
                     style={{ fontFamily: 'Poppins, sans-serif' }}
                   />
                   <button
@@ -180,26 +186,28 @@ const Login = () => {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   </div>
                 ) : (
-                  'Sign In'
+                  isAdminLogin ? 'Sign In as Admin' : 'Sign In'
                 )}
               </button>
             </form>
 
             {/* Footer Links */}
             <div className="mt-8 text-center space-y-4">
-              <div className={`text-sm transition-colors duration-500 ${
-                theme === 'dark' ? 'text-slate-400' : 'text-gray-600'
-              }`}>
-                Need an account?{' '}
-                <Link 
-                  to="/signup" 
-                  className={`font-semibold transition-all duration-500 hover:underline ${
-                    theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'
-                  }`}
-                >
-                  Create Account
-                </Link>
-              </div>
+              {!isAdminLogin && (
+                <div className={`text-sm transition-colors duration-500 ${
+                  theme === 'dark' ? 'text-slate-400' : 'text-gray-600'
+                }`}>
+                  Need an account?{' '}
+                  <Link 
+                    to="/signup" 
+                    className={`font-semibold transition-all duration-500 hover:underline ${
+                      theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'
+                    }`}
+                  >
+                    Create Account
+                  </Link>
+                </div>
+              )}
               
               <div className="flex items-center justify-center gap-4 text-xs">
                 <div className={`h-px w-16 ${
@@ -220,9 +228,13 @@ const Login = () => {
               }`}>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Shield className="w-4 h-4" />
-                  <span>Automatic role detection</span>
+                  <span>{isAdminLogin ? 'Manager-only access' : 'Automatic role detection'}</span>
                 </div>
-                <p>Managers and employees use the same login flow</p>
+                <p>
+                  {isAdminLogin
+                    ? 'Employee signup is not available from the admin portal'
+                    : 'Managers and employees use the same login flow'}
+                </p>
               </div>
             </div>
           </div>

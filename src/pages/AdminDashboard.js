@@ -204,7 +204,7 @@ const Sidebar = ({
               {user?.name || 'Manager'}
             </p>
             <p className="text-xs text-slate-500 truncate" style={{ fontFamily: 'Poppins, sans-serif' }}>
-              {user?.email || 'manager@company.com'}
+              {user?.email || 'No email available'}
             </p>
           </div>
         </div>
@@ -270,7 +270,7 @@ const LeaveTable = ({
                       {leave.user?.name || 'Employee'}
                     </button>
                   </div>
-                  <div className="text-xs text-slate-500">{leave.user?.email || 'employee@company.com'}</div>
+                  <div className="text-xs text-slate-500">{leave.user?.email || 'No email available'}</div>
                 </td>
                 <td className="px-8 py-5 whitespace-nowrap">
                   <div className="text-sm text-slate-900">
@@ -370,7 +370,7 @@ const LeaveTable = ({
                 >
                   {leave.user?.name || 'Employee'}
                 </button>
-                <div className="text-xs text-slate-500">{leave.user?.email || 'employee@company.com'}</div>
+                <div className="text-xs text-slate-500">{leave.user?.email || 'No email available'}</div>
               </div>
               {/* Status Badge */}
               <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
