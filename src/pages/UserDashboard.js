@@ -3,26 +3,33 @@ import 'react-calendar/dist/Calendar.css';
 import { userService } from '../services/api';
 import ThemeToggle from '../components/ThemeToggle';
 import EnhancedCalendar from '../components/EnhancedCalendar';
+import Announcements from '../components/Announcements';
+import TeamDirectory from '../components/TeamDirectory';
+import AttendanceDashboard from '../components/AttendanceDashboard';
 import { useRealTimeLeaves } from '../hooks/useRealTimeLeaves';
 import logo from '../assets/OIP.webp';
-import { 
-  Calendar as CalendarIcon, 
-  LogOut, 
-  Plus, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Calendar as CalendarIcon,
+  LogOut,
+  Plus,
+  Clock,
+  CheckCircle,
+  XCircle,
   Clock3,
   User,
   FileText,
   CalendarDays,
   RefreshCw,
   ChevronDown,
-  Tag
+  Tag,
+  Megaphone,
+  Users,
+  BarChart2
 } from 'lucide-react';
 
 const UserDashboard = () => {
-  const [activeTab, setActiveTab] = useState('apply');
+  const [activeTab, setActiveTab] = useState('leave');
+  const [leaveSubTab, setLeaveSubTab] = useState('apply');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reason, setReason] = useState('');
@@ -380,7 +387,7 @@ const UserDashboard = () => {
       </nav>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 sm:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Desktop Stats - Hidden on Mobile */}
         <div className="hidden sm:grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-4 sm:p-5 border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
@@ -477,8 +484,45 @@ const UserDashboard = () => {
           </div>
         </div>
 
+        {/* Tab Navigation (both desktop + mobile scrollable) */}
+        <div className="mb-6 overflow-x-auto">
+          <div className="flex gap-1 bg-white dark:bg-slate-800 rounded-2xl p-1.5 border border-slate-200 dark:border-slate-700 shadow-sm min-w-max">
+            {[
+              { id: 'leave',         label: 'Leave',         icon: FileText   },
+              { id: 'attendance',    label: 'Attendance',    icon: BarChart2  },
+              { id: 'announcements', label: 'Announcements', icon: Megaphone  },
+              { id: 'team',          label: 'Team',          icon: Users      },
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                  activeTab === id
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-700 text-white shadow-md'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Content Area with Smooth Transitions */}
         <div className="transition-all duration-300 ease-in-out">
+
+          {/* Announcements Tab */}
+          {activeTab === 'announcements' && <Announcements />}
+
+          {/* Team Tab */}
+          {activeTab === 'team' && <TeamDirectory />}
+
+          {/* Attendance Tab */}
+          {activeTab === 'attendance' && <AttendanceDashboard />}
+
+          {/* Leave Tab */}
+          {activeTab === 'leave' && <>
           {/* Desktop Layout */}
           <div className="hidden sm:block">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -774,7 +818,22 @@ const UserDashboard = () => {
 
           {/* Mobile Layout */}
           <div className="sm:hidden">
-            {activeTab === 'apply' ? (
+            {/* Mobile sub-tabs for Leave section */}
+            <div className="flex gap-2 mb-5">
+              <button
+                onClick={() => setLeaveSubTab('apply')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all ${leaveSubTab === 'apply' ? 'bg-gradient-to-r from-indigo-600 to-violet-700 text-white shadow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}`}
+              >
+                <Plus className="w-4 h-4" /> Apply
+              </button>
+              <button
+                onClick={() => setLeaveSubTab('history')}
+                className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all ${leaveSubTab === 'history' ? 'bg-gradient-to-r from-indigo-600 to-violet-700 text-white shadow' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700'}`}
+              >
+                <CalendarDays className="w-4 h-4" /> History
+              </button>
+            </div>
+            {leaveSubTab === 'apply' ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Leave Application Form */}
                 <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 p-5 sm:p-8 transition-colors duration-300">
@@ -1063,34 +1122,7 @@ const UserDashboard = () => {
           </div>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* Mobile Bottom Navigation */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50">
-        <div className="flex justify-around items-center py-2">
-          <button
-            onClick={() => setActiveTab('apply')}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${
-              activeTab === 'apply'
-                ? 'text-indigo-600'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <Plus className="w-5 h-5" />
-            <span className="text-xs font-medium">Apply</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('history')}
-            className={`flex flex-col items-center gap-1 px-4 py-2 rounded-lg transition-all ${
-              activeTab === 'history'
-                ? 'text-indigo-600'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            <CalendarDays className="w-5 h-5" />
-            <span className="text-xs font-medium">History</span>
-          </button>
+          </>}
         </div>
       </div>
     </div>

@@ -3,43 +3,38 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authService, extractApiErrorMessage } from '../services/api';
 import { useTheme } from '../contexts/ThemeContext';
 import logo from '../assets/OIP.webp';
-import { 
-  Mail, 
-  Eye, 
-  EyeOff, 
-  Shield
-} from 'lucide-react';
+import { Mail, Eye, EyeOff, Shield, Zap } from 'lucide-react';
+
+const DEMO = {
+  employee: { email: 'employee@rockpaperscissors.studio', password: 'Demo@123' },
+  admin:    { email: 'admin@rockpaperscissors.studio',    password: 'Demo@123' },
+};
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [focusedField, setFocusedField] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { theme } = useTheme();
+  const location    = useLocation();
+  const navigate    = useNavigate();
+  const { theme }   = useTheme();
   const isAdminLogin = location.pathname === '/admin/login';
+
+  const prefill = isAdminLogin ? DEMO.admin : DEMO.employee;
+
+  const [email,        setEmail]        = useState(prefill.email);
+  const [password,     setPassword]     = useState(prefill.password);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error,        setError]        = useState('');
+  const [loading,      setLoading]      = useState(false);
+  const [focusedField, setFocusedField] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
       const response = await authService.login(email, password);
-      
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role);
-      localStorage.setItem('user', JSON.stringify(response.data));
-      
-      // Redirect based on role
-      if (response.data.role === 'MANAGER') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      localStorage.setItem('role',  response.data.role);
+      localStorage.setItem('user',  JSON.stringify(response.data));
+      navigate(response.data.role === 'MANAGER' ? '/admin/dashboard' : '/dashboard');
     } catch (err) {
       setError(extractApiErrorMessage(err) || 'Invalid credentials');
     } finally {
@@ -69,10 +64,26 @@ const Login = () => {
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-screen p-4">
         <div className="w-full max-w-md">
+
+          {/* Demo hint banner */}
+          <div className="mb-4 bg-indigo-50 border border-indigo-200 rounded-xl p-3.5 flex items-start gap-3">
+            <Zap className="w-4 h-4 text-indigo-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-indigo-800" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Demo mode — credentials pre-filled
+              </p>
+              <p className="text-xs text-indigo-600 mt-0.5" style={{ fontFamily: 'Poppins, sans-serif' }}>
+                Just click <strong>Sign In</strong> to explore the{' '}
+                {isAdminLogin ? 'Manager' : 'Employee'} dashboard.
+                {!isAdminLogin && (
+                  <> Or try the <Link to="/admin/login" className="underline font-semibold">Admin login</Link>.</>
+                )}
+              </p>
+            </div>
+          </div>
+
           {/* Login Card */}
           <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-            
-            {/* Header */}
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Poppins, sans-serif' }}>
                 {isAdminLogin ? 'Admin Login' : 'Login'}
@@ -84,21 +95,14 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Email Field */}
+              {/* Email */}
               <div>
-                <label className={`block text-sm font-medium mb-2 transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-slate-300' : 'text-gray-700'
-                }`}>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-slate-300' : 'text-gray-700'}`}>
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-500 ${
-                    focusedField === 'email' 
-                      ? 'text-blue-500' 
-                      : theme === 'dark' ? 'text-slate-400' : 'text-gray-400'
-                  }`}>
+                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${focusedField === 'email' ? 'text-blue-500' : theme === 'dark' ? 'text-slate-400' : 'text-gray-400'}`}>
                     <Mail className="w-5 h-5" />
                   </div>
                   <input
@@ -107,33 +111,21 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     onFocus={() => setFocusedField('email')}
                     onBlur={() => setFocusedField('')}
-                    className={`w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${
-                      theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'
-                    }`}
+                    className={`w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'}`}
                     placeholder={isAdminLogin ? 'Enter admin email' : 'Enter your email'}
                     style={{ fontFamily: 'Poppins, sans-serif' }}
                   />
                 </div>
               </div>
 
-              {/* Password Field */}
+              {/* Password */}
               <div>
-                <label className={`block text-sm font-medium mb-2 transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-slate-300' : 'text-gray-700'
-                }`}>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'dark' ? 'text-slate-300' : 'text-gray-700'}`}>
                   Password
                 </label>
                 <div className="relative">
-                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors duration-500 ${
-                    focusedField === 'password' 
-                      ? 'text-blue-500' 
-                      : theme === 'dark' ? 'text-slate-400' : 'text-gray-400'
-                  }`}>
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                  <div className={`absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none ${focusedField === 'password' ? 'text-blue-500' : theme === 'dark' ? 'text-slate-400' : 'text-gray-400'}`}>
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
@@ -141,36 +133,26 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     onFocus={() => setFocusedField('password')}
                     onBlur={() => setFocusedField('')}
-                    className={`w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${
-                      theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'
-                    }`}
+                    className={`w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-500 ${theme === 'dark' ? 'bg-slate-800 text-white' : 'bg-white text-slate-900'}`}
                     placeholder={isAdminLogin ? 'Enter admin password' : 'Enter your password'}
                     style={{ fontFamily: 'Poppins, sans-serif' }}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-colors duration-500 ${
-                      theme === 'dark' ? 'text-slate-400' : 'text-gray-400'
-                    }`}
+                    className={`absolute inset-y-0 right-0 pr-3 flex items-center ${theme === 'dark' ? 'text-slate-400' : 'text-gray-400'}`}
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>
 
-              {/* Error Message */}
               {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                   <p className="text-sm" style={{ fontFamily: 'Poppins, sans-serif' }}>{error}</p>
                 </div>
               )}
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -191,50 +173,25 @@ const Login = () => {
               </button>
             </form>
 
-            {/* Footer Links */}
             <div className="mt-8 text-center space-y-4">
               {!isAdminLogin && (
-                <div className={`text-sm transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-slate-400' : 'text-gray-600'
-                }`}>
+                <div className={`text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-gray-600'}`}>
                   Need an account?{' '}
-                  <Link 
-                    to="/signup" 
-                    className={`font-semibold transition-all duration-500 hover:underline ${
-                      theme === 'dark' ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-500'
-                    }`}
-                  >
+                  <Link to="/signup" className={`font-semibold hover:underline ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`}>
                     Create Account
                   </Link>
                 </div>
               )}
-              
               <div className="flex items-center justify-center gap-4 text-xs">
-                <div className={`h-px w-16 ${
-                  theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300'
-                }`} />
-                <span className={`transition-colors duration-500 ${
-                  theme === 'dark' ? 'text-slate-500' : 'text-gray-400'
-                }`}>
-                  SECURE ACCESS
-                </span>
-                <div className={`h-px w-16 ${
-                  theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300'
-                }`} />
+                <div className={`h-px w-16 ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300'}`} />
+                <span className={theme === 'dark' ? 'text-slate-500' : 'text-gray-400'}>SECURE ACCESS</span>
+                <div className={`h-px w-16 ${theme === 'dark' ? 'bg-slate-600' : 'bg-gray-300'}`} />
               </div>
-              
-              <div className={`text-xs transition-colors duration-500 ${
-                theme === 'dark' ? 'text-slate-500' : 'text-gray-400'
-              }`}>
+              <div className={`text-xs ${theme === 'dark' ? 'text-slate-500' : 'text-gray-400'}`}>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Shield className="w-4 h-4" />
                   <span>{isAdminLogin ? 'Manager-only access' : 'Automatic role detection'}</span>
                 </div>
-                <p>
-                  {isAdminLogin
-                    ? 'Employee signup is not available from the admin portal'
-                    : 'Managers and employees use the same login flow'}
-                </p>
               </div>
             </div>
           </div>

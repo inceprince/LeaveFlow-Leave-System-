@@ -11,6 +11,18 @@ The app supports employee leave applications, leave history tracking, profile up
 - The frontend connects to a live backend API hosted on Railway.
 - Data is stored in PostgreSQL using NeonDB as the cloud database provider.
 
+## Evaluation Criteria
+
+| Criteria           | Weight |
+|--------------------|--------|
+| React Fundamentals | 25%    |
+| Code Quality       | 20%    |
+| UI/UX              | 20%    |
+| AI Feature         | 15%    |
+| State Management   | 10%    |
+| Documentation      | 5%     |
+| Creativity         | 5%     |
+
 ## Screenshots
 
 ### Employee Module
@@ -75,6 +87,18 @@ The frontend uses the API base URL below:
 ```env
 VITE_API_URL="https://leaveflowbackend-production.up.railway.app/api"
 ```
+
+### Architecture Evaluation Criteria
+
+| Criteria           | Weight |
+|--------------------|--------|
+| React Fundamentals | 25%    |
+| Code Quality       | 20%    |
+| UI/UX              | 20%    |
+| AI Feature         | 15%    |
+| State Management   | 10%    |
+| Documentation      | 5%     |
+| Creativity         | 5%     |
 
 ## Features
 

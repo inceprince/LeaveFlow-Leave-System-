@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 import { userService } from '../services/api';
 
 export const useRealTimeLeaves = () => {
-  const [leaves, setLeaves] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [leaves,      setLeaves]      = useState([]);
+  const [loading,     setLoading]     = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
 
   const fetchLeaves = useCallback(async () => {
     setLoading(true);
     try {
       const response = await userService.getMyLeaves();
-      setLeaves(response.data);
+      setLeaves(Array.isArray(response.data) ? response.data : []);
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Error fetching leaves:', error);
@@ -19,15 +19,7 @@ export const useRealTimeLeaves = () => {
     }
   }, []);
 
-  // Initial fetch only
-  useEffect(() => {
-    fetchLeaves();
-  }, [fetchLeaves]);
+  useEffect(() => { fetchLeaves(); }, [fetchLeaves]);
 
-  return {
-    leaves,
-    loading,
-    lastUpdated,
-    refetch: fetchLeaves
-  };
+  return { leaves, loading, lastUpdated, refetch: fetchLeaves };
 };
